@@ -24,6 +24,19 @@ const __moduleDir = path.dirname(fileURLToPath(import.meta.url));
 function asString(value: unknown): string | null {
   return typeof value === "string" && value.trim().length > 0 ? value.trim() : null;
 }
+/**
+ * Read an env value that the adapter config may express either as a plain
+ * string or as a structured binding. Secret bindings are never resolved here:
+ * they return null so the caller falls back to the platform default.
+ */
+function envPlainString(value: unknown): string | null {
+  if (typeof value === "string") return asString(value);
+  if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+    const record = value as Record<string, unknown>;
+    if (record.type === "plain") return asString(record.value);
+  }
+  return null;
+}
 function expandHome(value: string): string {
   if (value === "~") return os.homedir();
   if (value.startsWith("~/") || value.startsWith("~\\"))
