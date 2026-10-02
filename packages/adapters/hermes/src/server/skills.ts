@@ -55,7 +55,7 @@ function expandHome(value: string): string {
  * This mirrors the CODEX_HOME / CLAUDE_HOME / KIMI_CODE_HOME handling in
  * paperclipai/dist/index.js, which the Hermes adapter was missing.
  */
-function resolveHermesHome(config: Record<string, unknown>): string {
+export function resolveHermesHome(config: Record<string, unknown>): string {
   const env =
     typeof config.env === "object" && config.env !== null && !Array.isArray(config.env)
       ? (config.env as Record<string, unknown>)
