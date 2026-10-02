@@ -121,3 +121,13 @@ test("an empty or blank HERMES_HOME falls back to the platform default", () => {
     );
   }
 });
+
+test("structured {type:'plain'} binding is read; secret binding falls back", () => {
+  delete process.env.HERMES_HOME;
+  const plainHome = path.join(os.tmpdir(), "structured-plain-hermes");
+  expect(
+    resolveHermesHome({ env: { HERMES_HOME: { type: "plain", value: plainHome } } }),
+  ).toBe(path.resolve(plainHome));
+  const secretResult = resolveHermesHome({ env: { HERMES_HOME: { type: "secret", key_ref: "x" } } });
+  expect(secretResult).not.toBe(path.resolve("secret"));
+});

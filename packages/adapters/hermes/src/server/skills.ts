@@ -63,7 +63,7 @@ export function resolveHermesHome(config: Record<string, unknown>): string {
   // config.env wins over process.env: it is the adapter config the operator set
   // deliberately, and execute.js forwards it to the spawned Hermes process, so
   // both sides then agree on one home.
-  const configuredHome = asString(env.HERMES_HOME) ?? asString(process.env.HERMES_HOME);
+  const configuredHome = envPlainString(env.HERMES_HOME) ?? envPlainString(process.env.HERMES_HOME);
   if (configuredHome) {
     return path.resolve(
       expandHome(
@@ -73,10 +73,10 @@ export function resolveHermesHome(config: Record<string, unknown>): string {
   }
   // Matches _get_platform_default_hermes_home(): HERMES_DATA_DIR_SUFFIX lets a
   // parallel install keep its data under a suffixed directory.
-  const suffix = asString(env.HERMES_DATA_DIR_SUFFIX) ?? asString(process.env.HERMES_DATA_DIR_SUFFIX) ?? "";
+  const suffix = envPlainString(env.HERMES_DATA_DIR_SUFFIX) ?? envPlainString(process.env.HERMES_DATA_DIR_SUFFIX) ?? "";
   if (process.platform === "win32") {
-    const localAppData = asString(env.LOCALAPPDATA) ?? asString(process.env.LOCALAPPDATA);
-    const configuredHome = asString(env.HOME);
+    const localAppData = envPlainString(env.LOCALAPPDATA) ?? envPlainString(process.env.LOCALAPPDATA);
+    const configuredHome = envPlainString(env.HOME);
     const base = localAppData
       ? path.resolve(localAppData)
       : path.join(
@@ -86,7 +86,7 @@ export function resolveHermesHome(config: Record<string, unknown>): string {
         );
     return path.join(base, `hermes${suffix}`);
   }
-  const home = asString(env.HOME);
+  const home = envPlainString(env.HOME);
   return path.join(home ? path.resolve(home) : os.homedir(), `.hermes${suffix}`);
 }
 
